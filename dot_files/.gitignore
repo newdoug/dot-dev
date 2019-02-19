@@ -1,0 +1,22 @@
+*.swap
+target
+*.swp
+*.swo
+*.swn
+.cproject
+*.project
+.settings
+*.classpath
+logs
+
+*.gch
+
+# .o and .a for C object and lib files
+*.o
+*.a
+
+# .class for java compiled files
+*.class
+
+# .stash is for qmake files
+*.stash

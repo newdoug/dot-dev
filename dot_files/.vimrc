@@ -1,0 +1,363 @@
+" PLUGINS START
+" use pathogen - makes it easy to install plugins
+execute pathogen#infect()
+
+" smart indenting based on file type
+filetype indent plugin on
+
+set nocp
+filetype plugin on
+
+" for the 'a.vim' plugin:
+" use :AS and :AV for swtiching and splitting
+
+" for the vim-cpp-enhanced-highlight plugin in after/syntax/cpp.vim
+" highlight class scope
+let g:cpp_class_scope_highlight = 1
+" highlight member variables
+let g:cpp_member_variable_highlight = 1
+" highlight class names in declarations
+let g:cpp_class_decl_highlight = 1
+" highlight template functions - not perfect
+let g:cpp_experimental_simple_template_highlight = 1
+" faster, some missed things - not perfect
+" let g:cpp_experimental_template_highlight = 1
+" library concepts - highlights concept an requires keywords
+let g:cpp_concepts_highlight = 1
+" sometimes vim flags curlies as errors e.g. vector<int> v({1,2,3});
+" workaround
+let no_curly_error=1
+
+
+" omnicppcomplete
+"
+" set tags
+set tags+=~/.vim/tags/cpp
+set tags+=~/.vim/tags/usr_include
+" set tags+=~/.vim/tags/boost
+" TODO: boost tag is very large (> 1gb). Takes a while for vim to load
+" suggestions.
+
+" enable namespace search in current file AND (the = 2 option) in included files
+let OmniCpp_NamespaceSearch = 2
+" only show options for class autocompletion with appropriate visibility
+let OmniCpp_DisplayMode = 0
+" show scope in second column of autocomplete popup (default). Set to 1 for
+" last column - slightly harder to read, just moves stuff around 
+let OmniCpp_ShowScopeInAbbr = 0
+" show prototype in abbreviation part of popup
+let OmniCpp_ShowPrototypeInAbbr = 1
+" show access level (1 = on default)
+let OmniCpp_ShowAccess = 1
+" the default namespace list to search in 
+let OmniCpp_DefaultNamespaces = ['std', '_GLIBCXX_STD']
+" autocomplete after a dot - obj (1 = on default)
+let OmniCpp_MayCompleteDot = 0
+" autocomplete after a arrow - reference (1 = on default)
+let OmniCpp_MayCompleteArrow = 1
+" autocomplete after a :: - namespace scope (0 = off default)
+let OmniCpp_MayCompleteScope = 0
+" auto open/close popup menu
+au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+" set completeopt=menuone,menu,longest,preview
+
+
+" syntastic options
+" use :SyntasticInfo for info on whether it's on, automatic checking, etc.
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" py linter
+let g:syntastic_python_checkers = ['pylint']
+let g:syntastic_python_pylint_post_args = '--msg-template="{path}:{line}:{column}:{C}: [{symbol} {msg_id}] {msg}"'
+
+" shell 'linter' - fantastic. gives plenty of great warnings and
+" recommendations on how to fix 
+let g:syntastic_shell_checkers = ['shellcheck']
+
+" c++ checker
+" use g++ compiler
+" let g:syntastic_c_checkers=['make', 'splint']
+" let g:syntastic_cpp_checkers=['cppcheck', 'make']
+let g:syntastic_cpp_compiler = 'g++'
+" compiler options -stdlib=libc++ 
+let g:syntastic_cpp_compiler_options = ' -std=c++17 -Wall -Wconversion -Wextra -pedantic -pthread -lboost_log -lboost_chrono -lboost_atomic -lboost_thread -lboost_date_time -lboost_filesystem -lboost_system -lboost_regex' 
+" check header files (.h, .hh, .hpp)
+let g:syntastic_cpp_check_header = 1
+" limit syntastic window size to 4 lines
+let g:syntastic_loc_list_height = 4
+
+
+" nerd-commenter
+" add space after comment delimiter by default
+let g:NERDSpaceDelims = 1
+" compact syntax for prettified multi-line comments
+" let g:NERDCompactSextComs = 1
+" allows commenting and inverting empty lines
+let g:NERDCommentEmptyLines = 1
+
+" vim-indent-guides
+" automatically do the indentation marking on startup
+let g:indent_guides_enable_on_vim_startup = 1
+" required to choose a colorscheme - otherwise get weird error about Normal
+" highlight not found
+colorscheme default
+" different colors for indents
+" don't use auto_colors
+let g:indent_guides_auto_colors = 0
+" use these colors
+" IndentGuidesOdd is for indentations at levels 1,3,5,...
+" ctermbg seems to change difference of color based on background (guibg)
+" higher it gets, brighter it gets?
+autocmd VimEnter,Colorscheme * :hi IndentGuidesOdd  guibg=darkgrey ctermbg=0
+" for levels 2,4,6...
+autocmd VimEnter,Colorscheme * :hi IndentGuidesEven guibg=darkgrey ctermbg=0
+" change indent guide sizes
+" start at the left flush line rather than just first and other tabs
+let g:indent_guides_start_level = 1
+" only highlight one character length for tabs
+let g:indent_guides_guide_size = 1
+" not sure what this does...
+" let g:indent_guides_color_change_percent = 100
+
+" PLUGINS END
+
+" return back to original cursor position after running a command.
+" must call Preserve(<your command here>) for this to work
+function! Preserve(command)
+  " get window view - cursor position, line number, window height/width, etc.
+  let w = winsaveview()
+  " execute given command
+  execute a:command
+  " restore that view so it's like the cursor never moved during the command
+  call winrestview(w)
+endfunction
+
+" function! Preserve(command)
+" Save the last search.
+"  let search = @/
+" Save the current cursor position.
+"  let cursor_position = getpos('.')
+" Save the current window position.
+"  normal! H
+"  let window_position = getpos('.')
+"  call setpos('.', cursor_position)
+"  execute a:command
+" Restore the last search.
+"  let @/ = search
+" Restore the previous window position.
+"  call setpos('.', window_position)
+"  normal! zt
+" Restore the previous cursor position.
+"  call setpos('.', cursor_position)
+"endfunction
+
+
+set hidden
+
+" better auto-complete
+set wildmenu
+
+" show commands as you're typing in bottom right - love
+set showcmd
+
+" show filename as title in specific format
+set title
+
+" timeout (unit = millis) on mappings after 2 seconds, on key codes after 1 second
+set timeout timeoutlen=2000 ttimeoutlen=1000
+
+" highlight all searches
+set hlsearch
+" search incrementally (search while typing)
+set incsearch
+
+" set ignorecase - there is a mapping to this below: <leader>ii
+" set smartcase
+
+" smart backspace over autoindent, EOL, insert start
+set backspace=indent,eol,start
+
+" smart indenting
+set autoindent
+" tabbing - tabs go to 2 spaces
+set shiftwidth=2
+set softtabstop=2
+set tabstop=2
+set expandtab
+
+function! SetTabLengthRange() range
+  let &l:shiftwidth = v:count
+  let &l:softtabstop = v:count
+  let &l:tabstop = v:count
+endfunction
+
+function! SetTabLength(len)
+  let &l:shiftwidth = a:len
+  let &l:softtabstop = a:len
+  let &l:tabstop = a:len
+endfunction
+
+" a little easier with new line typing
+" starts your typing closer to where you'd expect
+set nostartofline
+
+" keeps track of line number/column number
+set ruler
+
+set laststatus=2
+
+" asks for confirmation instead of failing
+" e.g. if forgetting to write
+set confirm
+
+" if in an xterm, allows some mouse usage
+" set mouse=a
+
+" set number        " displays line numbers
+
+" syntax highlighting
+syntax on
+
+" TODO look into more plugins - fugitive (git), vim-autoformat
+" MAPS
+" note: don't put comments on same line as maps
+" press <F2> to display current datetime
+map <F2> :echo 'Current time is ' . strftime('%c')<CR>
+" press <F4> to fix indentation in entire file
+" nnoremap <F4> gg=G``      " also works
+" Preserve calls the command passed in, but puts cursor back to original
+" position when done
+nnoremap <F4> :call Preserve("normal gg=G")<CR>
+nnoremap <F5> :call Preserve("%!astyle -s2")<CR>
+" nnoremap <F7> :pyf /home/sam/Downloads/cfe-7.0.1.src/tools/clang-format/clang-format.py<CR>
+nnoremap <F7> :ClangFormat<CR>
+" imap <F7> <c-o>:pyf /home/sam/Downloads/cfe-7.0.1.src/tools/clang-format/clang-format.py<CR>
+" maps CTRL-F12 to generate CTAG of current directory (useful for CPP project
+" autocompletion for omnicppcomplete)
+map <C-F12> :!ctags -R --sort=yes --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+" the comment nerd plugin takes <num>\cc and comments that many below lines.
+" This is a shortcut to comment the current line
+map cc 1\cc
+map cu 1\cu
+" set ignorecase for when searching
+map <leader>ii :set ignorecase<CR>
+map <leader>iu :set noignorecase<CR>
+
+map <leader>pp :set paste<CR>
+map <leader>po :set nopaste<CR>
+map <F3> ^ 
+"<Left>
+map <leader>tl :call SetTabLengthRange()<CR>
+" copy whole file into default buffer
+nnoremap <leader>cpa :call Preserve("normal ggVGy")<CR>
+
+" nnoremap <leader><F8> @=':call SetTab
+" function! Myfunc() range
+" echo 'range = ' . a:firstline . ',' . a:lastline
+" echo 'count = ' . v:count . ',' . v:count1
+" endfunction
+" nnoremap <leader>ww :call Myfunc()<CR>
+
+
+" for all java and python files (based on extension), use tab length 4
+au BufReadPost,BufNewFile *.java,*.py,*.xml :call SetTabLength(4)
+" for all shell, perl, C++, C, source and header files, use tab length 2
+au BufReadPost,BufNewFile *.sh,*.pl,*.cpp,*.cxx,*.c,*.h,*.hpp :call SetTabLength(2)
+
+" Only do this part when compiled with support for autocommands
+if has("autocmd")
+  augroup redhat
+    autocmd!
+    " In text files, always limit the width of text to 78 characters
+    " autocmd BufRead *.txt set tw=78
+    " When editing a file, always jump to the last cursor position
+    autocmd BufReadPost *
+          \ if line("'\"") > 0 && line ("'\"") <= line("$") |
+          \   exe "normal! g'\"" |
+          \ endif
+    " don't write swapfile on most commonly used directories for NFS mounts or USB sticks
+    autocmd BufNewFile,BufReadPre /media/*,/run/media/*,/mnt/* set directory=~/tmp,/var/tmp,/tmp
+    " start with spec file template
+    autocmd BufNewFile *.spec 0r /usr/share/vim/vimfiles/template.spec
+  augroup END
+endif
+
+" statusline customization
+function! InsertStatuslineColor(mode)
+  if a:mode == 'i'
+    hi statusline guibg=Cyan ctermfg=6 guifg=Black ctermbg=0
+  elseif a:mode == 'r'
+    hi statusline guibg=Purple ctermfg=5 guifg=Black ctermbg=0
+  else
+    hi statusline guibg=DarkRed ctermfg=1 guifg=Black ctermbg=0
+  endif
+endfunction
+
+au InsertEnter * call InsertStatuslineColor(v:insertmode)
+au InsertLeave * hi statusline guibg=DarkGrey ctermfg=8 guifg=White ctermbg=15
+
+" default the statusline to green when entering Vim
+hi statusline guibg=DarkGrey ctermfg=8 guifg=White ctermbg=15
+
+" Formats the statusline
+set statusline=%f                           " file name
+set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
+set statusline+=%{&ff}] "file format
+set statusline+=%y      "filetype
+set statusline+=%h      "help file flag
+set statusline+=%m      "modified flag
+set statusline+=%r      "read only flag
+
+" Puts in the current git status
+" if count(g:pathogen_disabled, 'Fugitive') < 1   
+" set statusline+=%{fugitive#statusline()}
+" endif
+" 
+" " Puts in syntastic warnings
+" if count(g:pathogen_disabled, 'Syntastic') < 1  
+" set statusline+=%#warningmsg#
+" set statusline+=%{SyntasticStatuslineFlag()}
+" set statusline+=%*
+" endif
+
+set statusline+=\ %=                        " align left
+set statusline+=Line:%l/%L[%p%%]            " line X of Y [percent of file]
+set statusline+=\ Col:%c                    " current column
+set statusline+=\ Buf:%n                    " Buffer number
+set statusline+=\ [%b][0x%B]\               " ASCII and byte code under cursor
+
+
+" TODO: mapping for tabbing and untabbing lines when in visual line mode
+
+" other built-in shortcuts:
+" `` goes to last cursor line and column
+" '' goes to beginning of last line
+" '. goes to last changed line
+" gg to top of file
+" G to bottom of file
+" :<num>winc> move <num> of columns/rows to the right. Use < for left. Down?
+" Up?
+" D deletes rest of contents in line from cursor. So, <end>D or 0D will delete
+" entire line text, but keep the new line
+" L moves to bottom line on screen (not of file)
+" M moves to middle line on screen (not of file)
+" H moves to top line on screen (not of file)
+" % moves to matching bracket {} [] or ()
+" <num>k moves cursor <num> lines up
+" <num>j moves cursor <num> lines down
+" gu makes whole line lowercase 
+" gU makes whole line uppercase
+" g~ swaps case of whole line 
+"
+" MARKS:
+"   mx sets mark x at current cursor position
+"   'x go to beginning of line of mark x
+"   `x go to cursor position of mark x
+"
