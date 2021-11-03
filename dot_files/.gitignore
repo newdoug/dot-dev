@@ -14,9 +14,27 @@ logs
 # .o and .a for C object and lib files
 *.o
 *.a
+*.lib
+
+# common binary extensions
+*.dll
+*.exe
+*.so
+*.elf
+*.efi
+*.bin
 
 # .class for java compiled files
 *.class
 
 # .stash is for qmake files
 *.stash
+
+
+# python stuff
+*.pyc
+__pycache__/
+
+# java stuff
+*.javac
+
