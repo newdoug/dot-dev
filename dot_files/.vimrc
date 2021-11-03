@@ -197,7 +197,7 @@ endfunction
 " keeps track of line number/column number
 " set ruler
 
-" set laststatus=2
+set laststatus=2
 
 " syntax highlighting
 " syntax on
@@ -318,7 +318,7 @@ nnoremap <leader>cpa :call Preserve("normal ggVGy")<CR>
 
 " Formats the statusline
 set statusline=%f                           " file name
-set statusline+=[%{strlen(&fenc)?&fenc:'none'}, "file encoding
+set statusline+=\ [%{strlen(&fenc)?&fenc:'none'}, "file encoding
 set statusline+=%{&ff}] "file format
 set statusline+=%y      "filetype
 set statusline+=%h      "help file flag
@@ -341,7 +341,7 @@ set statusline+=\ %=                        " align left
 set statusline+=Line:%l/%L[%p%%]            " line X of Y [percent of file]
 set statusline+=\ Col:%c                    " current column
 set statusline+=\ Buf:%n                    " Buffer number
-set statusline+=\ [%b][0x%B]\               " ASCII and byte code under cursor
+set statusline+=\ [%b][0x%B]              " ASCII and byte code under cursor
 
 
 " TODO: mapping for tabbing and untabbing lines when in visual line mode
