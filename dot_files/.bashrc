@@ -207,3 +207,71 @@ function goog()
   unset BASE_URL;
 }
 
+function securedel()
+{
+  shred -n2 --remove=wipesync -f -z "$@";
+}
+
+function minorharden()
+{
+  # turn off:
+  #   bluetooth
+  #   cups (printer non-sense)
+  #   avahi-daemon - network printer auto-discovery
+  SERVS=(
+    'bluetooth.service'
+    'cups'
+    'cups-browsed'
+    'cups.socket'
+    'avahi-daemon.service'
+    'avahi-daemon.socket'
+    'obex'
+  );
+  for SERV in "${SERVS[@]}"; do
+    sudo systemctl stop "${SERV}";
+    sudo systemctl disable "${SERV}";
+  done
+  PROCS=(
+    'cupsd'
+    'cups-browsed'
+    'avahi-daemon'
+    'bluetooth'
+    'obex'
+  );
+  # stop existing processes
+  for PROC in "${PROCS[@]}"; do
+    sudo pkill "${PROC}";
+  done
+  sudo rmmod btusb btintel btbcm btrtl bluetooth;
+}
+
+function get_ifs()
+{
+  ip link | grep "^[0-9].*" | cut -d' ' -f2 | cut -d':' -f1;
+}
+function netoff()
+{
+  sudo systemctl stop networking
+  sudo systemctl stop network-manager
+  # bring down interfaces
+  for iface in $(get_ifs); do
+    case "${iface}" in
+      "enp"*|"wlp"*)
+        sudo ip link set "${iface}" down;
+        ;;
+    esac
+  done
+}
+function neton()
+{
+  sudo systemctl restart networking
+  sudo systemctl restart network-manager
+  # bring down interfaces
+  for iface in $(get_ifs); do
+    case "${iface}" in
+      "enp"*|"wlp"*)
+        sudo ip link set "${iface}" up;
+        ;;
+    esac
+  done
+}

@@ -200,7 +200,7 @@ endfunction
 set laststatus=2
 
 " syntax highlighting
-" syntax on
+syntax on
 
 " absolute line numbers
 " set number
