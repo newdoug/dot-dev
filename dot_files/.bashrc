@@ -249,7 +249,7 @@ function minorharden()
   for PROC in "${PROCS[@]}"; do
     sudo pkill "${PROC}";
   done
-  sudo rmmod btusb btintel btbcm btrtl bluetooth;
+  sudo rmmod btusb btintel btbcm btrtl bnep bluetooth;
 }
 
 function get_ifs()
